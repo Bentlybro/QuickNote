@@ -35,7 +35,7 @@ A sleek, modern note-taking application built with Electron that lives in your s
 ### Setup
 1. Clone the repository
 ```bash
-git clone [repository-url]
+git clone https://github.com/Bentlybro/QuickNote
 cd quicknote
 ```
 
