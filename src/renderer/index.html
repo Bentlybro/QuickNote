@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>QuickNote</title>
+    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <link rel="stylesheet" href="../../node_modules/highlight.js/styles/vs2015.css">
+</head>
+<body>
+    <!-- Icons -->
+    <div id="icons-container">
+        <svg style="display: none;">
+          <!-- Note types -->
+          <symbol id="icon-idea" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </symbol>
+          
+          <symbol id="icon-note" viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10,9 9,9 8,9"/>
+          </symbol>
+          
+          <symbol id="icon-todo" viewBox="0 0 24 24">
+            <polyline points="9,11 12,14 22,4"/>
+            <path d="m21 12c0 5-4 9-9 9s-9-4-9-9 4-9 9-9c.5 0 1 0 1.5.1"/>
+          </symbol>
+          
+          <symbol id="icon-reminder" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </symbol>
+          
+          <symbol id="icon-code" viewBox="0 0 24 24">
+            <polyline points="16,18 22,12 16,6"/>
+            <polyline points="8,6 2,12 8,18"/>
+          </symbol>
+          
+          <!-- Actions -->
+          <symbol id="icon-edit" viewBox="0 0 24 24">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="m18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </symbol>
+          
+          <symbol id="icon-delete" viewBox="0 0 24 24">
+            <polyline points="3,6 5,6 21,6"/>
+            <path d="m19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            <line x1="10" y1="11" x2="10" y2="17"/>
+            <line x1="14" y1="11" x2="14" y2="17"/>
+          </symbol>
+          
+          <symbol id="icon-save" viewBox="0 0 24 24">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17,21 17,13 7,13 7,21"/>
+            <polyline points="7,3 7,8 15,8"/>
+          </symbol>
+          
+          <symbol id="icon-search" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </symbol>
+          
+          <!-- UI -->
+          <symbol id="icon-all" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </symbol>
+        </svg>
+    </div>
+
+    <!-- Custom Title Bar -->
+    <div class="title-bar">
+        <div class="title-bar-title">QuickNote</div>
+        <div class="title-bar-controls">
+            <button class="title-bar-button minimize" onclick="minimizeWindow()">−</button>
+            <button class="title-bar-button maximize" onclick="toggleMaximize()">□</button>
+            <button class="title-bar-button close" onclick="closeWindow()">×</button>
+        </div>
+    </div>
+
+    <div class="app-content">
+        <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <input type="text" class="search-box" id="search-input" placeholder="Search notes...">
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="filter-tabs">
+                    <div class="filter-tab active" data-filter="all">
+                        <svg class="icon"><use href="#icon-all"></use></svg>
+                        All
+                    </div>
+                    <div class="filter-tab" data-filter="idea">
+                        <svg class="icon"><use href="#icon-idea"></use></svg>
+                        Ideas
+                    </div>
+                    <div class="filter-tab" data-filter="note">
+                        <svg class="icon"><use href="#icon-note"></use></svg>
+                        Notes
+                    </div>
+                    <div class="filter-tab" data-filter="todo">
+                        <svg class="icon"><use href="#icon-todo"></use></svg>
+                        Todos
+                    </div>
+                    <div class="filter-tab" data-filter="reminder">
+                        <svg class="icon"><use href="#icon-reminder"></use></svg>
+                        Reminders
+                    </div>
+                    <div class="filter-tab" data-filter="code">
+                        <svg class="icon"><use href="#icon-code"></use></svg>
+                        Code
+                    </div>
+                </div>
+                
+                <div class="notes-list" id="notes-list">
+                    <!-- Notes will be populated here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div id="note-detail" class="empty-state">
+                <h2>Welcome to QuickNote</h2>
+                <p>Press <strong>Ctrl+Alt+Space</strong> anywhere to quickly capture ideas</p>
+                <p>Select a note from the sidebar to view details</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hotkey-hint">
+        Press Ctrl+Alt+Space for quick capture
+    </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const { marked } = require('marked');
+        const hljs = require('highlight.js');
+        
+        // Configure marked with highlight.js
+        marked.setOptions({
+            highlight: function(code, language) {
+                if (language && hljs.getLanguage(language)) {
+                    try {
+                        return hljs.highlight(code, { language }).value;
+                    } catch (err) {}
+                }
+                try {
+                    return hljs.highlightAuto(code).value;
+                } catch (err) {}
+                return code;
+            },
+            breaks: true,
+            gfm: true
+        });
+        
+        let notes = [];
+        let filteredNotes = [];
+        let selectedNote = null;
+        let currentFilter = 'all';
+        let isEditing = false;
+        
+        const typeIcons = {
+            idea: 'icon-idea',
+            note: 'icon-note',
+            todo: 'icon-todo',
+            reminder: 'icon-reminder',
+            code: 'icon-code'
+        };
+        
+        // Load notes on startup
+        loadNotes();
+        
+        async function loadNotes() {
+            notes = await ipcRenderer.invoke('get-notes');
+            applyFilters();
+        }
+        
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            filteredNotes = notes.filter(note => {
+                const matchesFilter = currentFilter === 'all' || note.type === currentFilter;
+                const matchesSearch = !searchTerm || 
+                    note.content.toLowerCase().includes(searchTerm) ||
+                    note.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                
+                return matchesFilter && matchesSearch;
+            });
+            
+            renderNotesList();
+        }
+        
+        function renderNotesList() {
+            const notesList = document.getElementById('notes-list');
+            
+            if (filteredNotes.length === 0) {
+                const emptyMessage = currentFilter === 'all' ? 'No notes yet' : `No ${currentFilter}s found`;
+                notesList.innerHTML = `<div class="empty-state" style="padding: 40px 20px; font-size: 13px;">${emptyMessage}</div>`;
+                return;
+            }
+            
+            notesList.innerHTML = filteredNotes.map(note => {
+                const date = new Date(note.timestamp).toLocaleDateString();
+                const time = new Date(note.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                return `
+                    <div class="note-item ${note.type} ${selectedNote?.id === note.id ? 'selected' : ''}" 
+                         onclick="selectNote('${note.id}')">
+                        <div class="note-header">
+                            <span class="note-type">
+                                <svg class="icon"><use href="#${typeIcons[note.type] || 'icon-note'}"></use></svg>
+                                ${note.type.charAt(0).toUpperCase() + note.type.slice(1)}
+                            </span>
+                            <span class="note-date">${date} ${time}</span>
+                        </div>
+                        ${note.title ? `<div class="note-title">${note.title}</div>` : ''}
+                        <div class="note-content">${stripMarkdown(note.content)}</div>
+                        ${note.tags.length > 0 ? `
+                            <div class="note-tags">
+                                ${note.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function selectNote(noteId) {
+            selectedNote = notes.find(note => note.id === noteId);
+            isEditing = false;
+            renderNoteDetail();
+            renderNotesList(); // Re-render to update selected state
+        }
+        
+        function renderNoteDetail() {
+            const noteDetail = document.getElementById('note-detail');
+            
+            if (!selectedNote) {
+                noteDetail.className = 'empty-state';
+                noteDetail.innerHTML = `
+                    <h2>Welcome to QuickNote</h2>
+                    <p>Press <strong>Ctrl+Alt+Space</strong> anywhere to quickly capture ideas</p>
+                    <p>Select a note from the sidebar to view details</p>
+                `;
+                return;
+            }
+            
+            const date = new Date(selectedNote.timestamp).toLocaleString();
+            
+            noteDetail.className = `note-detail ${selectedNote.type}`;
+            noteDetail.innerHTML = `
+                <div class="note-detail-header">
+                    <div>
+                        <span class="note-detail-type">
+                            <svg class="icon"><use href="#${typeIcons[selectedNote.type] || 'icon-note'}"></use></svg>
+                            ${selectedNote.type.charAt(0).toUpperCase() + selectedNote.type.slice(1)}
+                        </span>
+                        ${selectedNote.title ? `<h2 class="note-detail-title">${selectedNote.title}</h2>` : ''}
+                    </div>
+                    <div class="note-detail-date">${date}</div>
+                    <div class="note-actions">
+                        ${isEditing ? `
+                            <button class="btn btn-primary" onclick="saveNote()">
+                                <svg class="icon"><use href="#icon-save"></use></svg>
+                                Save
+                            </button>
+                            <button class="btn" onclick="cancelEdit()">Cancel</button>
+                        ` : `
+                            <button class="btn" onclick="editNote()">
+                                <svg class="icon"><use href="#icon-edit"></use></svg>
+                                Edit
+                            </button>
+                        `}
+                        <button class="btn btn-danger" onclick="deleteNote()">
+                            <svg class="icon"><use href="#icon-delete"></use></svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                
+                ${selectedNote.screenshot ? `
+                    <div style="margin: 20px 0;">
+                        <img src="${selectedNote.screenshot}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" alt="Screenshot">
+                    </div>
+                ` : ''}
+                
+                <div class="note-detail-content ${isEditing ? 'editable' : 'markdown-rendered'}" 
+                     ${isEditing ? 'contenteditable="true"' : ''}
+                     id="note-content">${isEditing ? selectedNote.content : marked.parse(selectedNote.content)}</div>
+                
+                ${selectedNote.tags.length > 0 ? `
+                    <div class="note-tags">
+                        ${selectedNote.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                    </div>
+                ` : ''}
+            `;
+            
+            if (isEditing) {
+                document.getElementById('note-content').focus();
+            }
+        }
+        
+        function editNote() {
+            isEditing = true;
+            renderNoteDetail();
+        }
+        
+        function cancelEdit() {
+            isEditing = false;
+            renderNoteDetail();
+        }
+        
+        async function saveNote() {
+            const content = document.getElementById('note-content').textContent.trim();
+            if (!content) return;
+            
+            try {
+                // Extract tags from content
+                const tags = extractTags(content);
+                
+                // Update the note
+                const updatedNote = {
+                    ...selectedNote,
+                    content: content,
+                    tags: tags,
+                    timestamp: new Date().toISOString()
+                };
+                
+                const savedNote = await ipcRenderer.invoke('save-note', updatedNote);
+                console.log('Note saved:', savedNote);
+                
+                isEditing = false;
+                
+                // Update the selected note with the saved data
+                selectedNote = savedNote;
+                
+                // Reload notes and re-render
+                await loadNotes();
+                renderNoteDetail();
+            } catch (error) {
+                console.error('Error saving note:', error);
+                alert('Failed to save note: ' + error.message);
+            }
+        }
+        
+        async function deleteNote() {
+            if (!selectedNote) return;
+            
+            if (confirm('Are you sure you want to delete this note?')) {
+                try {
+                    const deleted = await ipcRenderer.invoke('delete-note', selectedNote.id);
+                    if (deleted) {
+                        // Clear selected note and show empty state
+                        selectedNote = null;
+                        isEditing = false;
+                        
+                        // Show empty state immediately
+                        renderNoteDetail();
+                        
+                        // Reload notes list
+                        await loadNotes();
+                    } else {
+                        alert('Failed to delete note');
+                    }
+                } catch (error) {
+                    console.error('Error deleting note:', error);
+                    alert('Failed to delete note: ' + error.message);
+                }
+            }
+        }
+        
+        function extractTags(content) {
+            const tagRegex = /#(\w+)/g;
+            const tags = [];
+            let match;
+            while ((match = tagRegex.exec(content)) !== null) {
+                tags.push(match[1]);
+            }
+            return tags;
+        }
+        
+        function stripMarkdown(text) {
+            return text
+                // Remove code blocks (```code```)
+                .replace(/```[\s\S]*?```/g, '[code block]')
+                // Remove inline code (`code`)
+                .replace(/`([^`]+)`/g, '$1')
+                // Remove headers (# ## ###)
+                .replace(/^#{1,6}\s+/gm, '')
+                // Remove bold/italic (**text** __text__ *text* _text_)
+                .replace(/(\*\*|__)(.*?)\1/g, '$2')
+                .replace(/(\*|_)(.*?)\1/g, '$2')
+                // Remove links [text](url)
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+                // Remove strikethrough ~~text~~
+                .replace(/~~(.*?)~~/g, '$1')
+                // Remove blockquotes
+                .replace(/^>\s+/gm, '')
+                // Clean up multiple spaces/newlines
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+        
+        // Event listeners
+        document.getElementById('search-input').addEventListener('input', applyFilters);
+        
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
+                applyFilters();
+            });
+        });
+        
+        // Real-time note updates
+        ipcRenderer.on('notes-updated', async () => {
+            await loadNotes();
+            // If we had a selected note and it was deleted, it will be cleared above
+            renderNotesList();
+        });
+        
+        // Auto-refresh notes every 5 seconds as backup
+        setInterval(loadNotes, 5000);
+        
+        // Window controls
+        function minimizeWindow() {
+            ipcRenderer.send('window-minimize');
+        }
+        
+        function toggleMaximize() {
+            ipcRenderer.send('window-maximize');
+        }
+        
+        function closeWindow() {
+            ipcRenderer.send('window-close');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Capture</title>
+    <link rel="stylesheet" href="../../assets/css/quick-capture.css">
+</head>
+<body>
+    <div class="glass-container">
+        <div id="capture-form">
+        <div class="type-selector">
+            <div class="type-btn active" data-type="idea">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Idea
+            </div>
+            <div class="type-btn" data-type="note">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+                Note
+            </div>
+            <div class="type-btn" data-type="todo">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <polyline points="9,11 12,14 22,4"/>
+                    <path d="m21 12c0 5-4 9-9 9s-9-4-9-9 4-9 9-9c.5 0 1 0 1.5.1"/>
+                </svg>
+                Todo
+            </div>
+            <div class="type-btn" data-type="reminder">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12,6 12,12 16,14"/>
+                </svg>
+                Reminder
+            </div>
+            <div class="type-btn" data-type="code">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <polyline points="16,18 22,12 16,6"/>
+                    <polyline points="8,6 2,12 8,18"/>
+                </svg>
+                Code
+            </div>
+        </div>
+        
+        <input type="text" id="title-input" placeholder="Title (optional)" />
+        <div class="textarea-container">
+            <textarea id="content-input" placeholder="What's on your mind?" autofocus></textarea>
+            <button class="floating-save-btn" id="save-btn" title="Save (Ctrl+Enter)">
+                →
+            </button>
+        </div>
+        
+        <div id="image-preview" style="display: none;">
+            <img id="pasted-image">
+            <button id="remove-image">×</button>
+        </div>
+    </div>
+    </div>
+
+    <script src="quick-capture.js"></script>
+</body>
+</html>

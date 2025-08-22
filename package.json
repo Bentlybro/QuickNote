@@ -1,0 +1,49 @@
+{
+  "name": "quicknote",
+  "version": "1.0.0",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "rebuild": "electron-rebuild",
+    "postinstall": "electron-rebuild",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Quick note taking app with global hotkey",
+  "build": {
+    "appId": "com.quicknote.app",
+    "productName": "QuickNote",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "notes/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "devDependencies": {
+    "electron": "^37.3.1",
+    "electron-builder": "^26.0.12",
+    "electron-rebuild": "^3.2.9",
+    "globalkey": "^1.0.7",
+    "screenshot-desktop": "^1.15.2"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "highlight.js": "^11.11.1",
+    "marked": "^16.2.0"
+  }
+}
